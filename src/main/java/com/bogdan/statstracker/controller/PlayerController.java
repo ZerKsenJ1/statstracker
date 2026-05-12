@@ -1,5 +1,6 @@
 package com.bogdan.statstracker.controller;
 
+import com.bogdan.statstracker.client.OsuClient;
 import com.bogdan.statstracker.entity.Player;
 import com.bogdan.statstracker.entity.PlayerStats;
 import com.bogdan.statstracker.service.PlayerService;
@@ -13,10 +14,12 @@ import java.util.List;
 public class PlayerController {
     private final PlayerService playerService;
     private final PlayerStatsService playerStatsService;
+    private final OsuClient osuClient;
 
-    public PlayerController(PlayerService playerService, PlayerStatsService playerStatsService) {
+    public PlayerController(PlayerService playerService, PlayerStatsService playerStatsService, OsuClient osuClient) {
         this.playerService = playerService;
         this.playerStatsService = playerStatsService;
+        this.osuClient = osuClient;
     }
 
     @GetMapping("/players")
@@ -27,6 +30,11 @@ public class PlayerController {
     @GetMapping("/players/{id}/stats")
     public List<PlayerStats> getPlayerStatsById(@PathVariable Long id) {
         return playerStatsService.getStatsByPlayerId(id);
+    }
+
+    @GetMapping("/test-token")
+    public String testResponse() {
+        return osuClient.getAccessToken();
     }
 
     @PostMapping("/players")
