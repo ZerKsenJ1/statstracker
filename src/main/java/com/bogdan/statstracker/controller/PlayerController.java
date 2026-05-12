@@ -2,6 +2,7 @@ package com.bogdan.statstracker.controller;
 
 import com.bogdan.statstracker.client.OsuClient;
 import com.bogdan.statstracker.client.OsuUserResponse;
+import com.bogdan.statstracker.dto.PlayerStatsDTO;
 import com.bogdan.statstracker.entity.Player;
 import com.bogdan.statstracker.entity.PlayerStats;
 import com.bogdan.statstracker.service.PlayerService;
@@ -22,6 +23,9 @@ public class PlayerController {
         this.playerStatsService = playerStatsService;
         this.osuClient = osuClient;
     }
+
+    @GetMapping("/players/{id}/stats/history")
+    public List<PlayerStatsDTO> getPlayerHistory(@PathVariable Long id) { return playerStatsService.getStatsDTOByPlayerId(id); }
 
     @GetMapping("/players")
     public List<Player> getAllPlayers() {

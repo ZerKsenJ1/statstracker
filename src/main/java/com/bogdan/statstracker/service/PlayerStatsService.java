@@ -3,6 +3,7 @@ package com.bogdan.statstracker.service;
 import com.bogdan.statstracker.client.OsuClient;
 import com.bogdan.statstracker.client.OsuStatistics;
 import com.bogdan.statstracker.client.OsuUserResponse;
+import com.bogdan.statstracker.dto.PlayerStatsDTO;
 import com.bogdan.statstracker.entity.Player;
 import com.bogdan.statstracker.entity.PlayerStats;
 import com.bogdan.statstracker.repository.PlayerStatsRepository;
@@ -49,5 +50,11 @@ public class PlayerStatsService {
         stats.setMaxPP(osuData.getStatistics().getPp());
         stats.setDate(LocalDate.now());
         playerStatsRepository.save(stats);
+    }
+
+    public List<PlayerStatsDTO> getStatsDTOByPlayerId(Long playerId) {
+        return getStatsByPlayerId(playerId).stream()
+                .map(s -> new PlayerStatsDTO(s.getDate(), s.getWorldRank(), s.getCountryRank(), s.getMaxPP(), s.getAccuracy(), s.getPlaycount()))
+                .toList();
     }
 }
