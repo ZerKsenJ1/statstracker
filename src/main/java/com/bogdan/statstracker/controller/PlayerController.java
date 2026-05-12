@@ -24,6 +24,11 @@ public class PlayerController {
         return playerService.getAllPlayers();
     }
 
+    @GetMapping("/players/{id}/stats")
+    public List<PlayerStats> getPlayerStatsById(@PathVariable Long id) {
+        return playerStatsService.getStatsByPlayerId(id);
+    }
+
     @PostMapping("/players")
     public ResponseEntity<String> createUser(@RequestBody Player player) {
         String message = "Player " + player.getName() + " created!";
