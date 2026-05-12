@@ -24,12 +24,12 @@ public class OsuClient {
     }
 
 
-    public String getUserStats(String username) {
-        String result = webClient.get()
+    public OsuUserResponse getUserStats(String username) {
+        OsuUserResponse result = webClient.get()
                 .uri("/api/v2/users/{user}/{mode}", username, "osu")
                 .header("Authorization", "Bearer "+ getAccessToken())
                 .retrieve()
-                .bodyToMono(String.class)
+                .bodyToMono(OsuUserResponse.class)
                 .block();
         return result;
     }

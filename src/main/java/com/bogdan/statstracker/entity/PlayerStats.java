@@ -16,7 +16,7 @@ public class PlayerStats {
 
     private int worldRank;
     private int countryRank;
-    private double maxPP;
+    private double pp;
     private double bestScorePP;
     private int playcount;
     private double accuracy;
@@ -24,10 +24,15 @@ public class PlayerStats {
 
     public void setDate(LocalDate date) {this.date = date;}
     public void setPlayer(Player player) {this.player = player;}
+    public void setAccuracy(double accuracy) {this.accuracy = accuracy;}
+    public void setCountryRank(int countryRank) {this.countryRank = countryRank;}
+    public void setPlaycount(int playcount) {this.playcount = playcount;}
+    public void setWorldRank(int worldRank) {this.worldRank = worldRank;}
+    public void setMaxPP(double maxPP) {this.pp = maxPP;}
 
     public int getWorldRank() {return worldRank;}
     public int getCountryRank() {return countryRank;}
-    public double getMaxPP() {return maxPP;}
+    public double getMaxPP() {return pp;}
     public double getBestScorePP() {return bestScorePP;}
     public int getPlaycount() {return playcount;}
     public double getAccuracy() {return accuracy;}

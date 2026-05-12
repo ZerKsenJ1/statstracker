@@ -20,6 +20,10 @@ public class PlayerService {
         return playerRepository.findAll();
     }
 
+    public Optional<Player> getPlayerByName(String username) {
+        return playerRepository.findByName(username);
+    }
+
     public void savePlayer(Player player) {
         playerRepository.save(player);
     }

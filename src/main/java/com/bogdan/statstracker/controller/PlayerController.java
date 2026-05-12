@@ -1,6 +1,7 @@
 package com.bogdan.statstracker.controller;
 
 import com.bogdan.statstracker.client.OsuClient;
+import com.bogdan.statstracker.client.OsuUserResponse;
 import com.bogdan.statstracker.entity.Player;
 import com.bogdan.statstracker.entity.PlayerStats;
 import com.bogdan.statstracker.service.PlayerService;
@@ -38,7 +39,7 @@ public class PlayerController {
     }
 
     @GetMapping("/osu/users/{username}")
-    public String getOsuUser(@PathVariable String username) {
+    public OsuUserResponse getOsuUser(@PathVariable String username) {
         return osuClient.getUserStats(username);
     }
 
@@ -52,5 +53,10 @@ public class PlayerController {
     @PostMapping("/players/{id}/stats")
     public void getPlayerById(@PathVariable Long id, @RequestBody PlayerStats stats) {
         playerStatsService.saveStats(id, stats);
+    }
+
+    @PostMapping("/osu/users/{username}/fetch")
+    public void getFetch(@PathVariable String username) {
+        playerStatsService.fetchAndSaveStats(username);
     }
 }
