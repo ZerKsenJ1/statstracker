@@ -10,6 +10,13 @@
         h2 { color: #bd93f9; }
         .player-btn { background: #44475a; color: #f8f8f2; border: none; padding: 10px 20px; margin: 5px; border-radius: 5px; cursor: pointer; font-size: 16px; }
         .player-btn:hover { background: #6272a4; }
+        .search-box { display: flex; gap: 10px; margin-bottom: 20px; }
+        .search-box input { background: #44475a; color: #f8f8f2; border: none; padding: 10px 15px; border-radius: 5px; font-size: 16px; flex: 1; }
+        .search-box button { background: #ff79c6; color: #1a1a2e; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-size: 16px; font-weight: bold; }
+        .search-box button:hover { background: #bd93f9; }
+        .message { margin: 10px 0; padding: 10px; border-radius: 5px; }
+        .message.success { background: #2d4a2d; color: #50fa7b; }
+        .message.error { background: #4a2d2d; color: #ff5555; }
         table { width: 100%; border-collapse: collapse; margin-top: 20px; }
         th { background: #44475a; padding: 10px; text-align: left; }
         td { padding: 10px; border-bottom: 1px solid #44475a; }
@@ -19,6 +26,13 @@
 <body>
     <h1>osu! Stats Tracker</h1>
 
+    <h2>Add Player</h2>
+    <div class="search-box">
+        <input type="text" id="username-input" placeholder="Enter osu! username..." />
+        <button onclick="addPlayer()">Track</button>
+    </div>
+    <div id="message"></div>
+
     <h2>Players</h2>
     <div id="players"></div>
 
@@ -26,19 +40,43 @@
     <div id="stats"></div>
 
     <script>
-        // Load players on page load
-        fetch('/players')
-            .then(res => res.json())
-            .then(players => {
-                const div = document.getElementById('players');
-                players.forEach(player => {
-                    const btn = document.createElement('button');
-                    btn.className = 'player-btn';
-                    btn.textContent = player.name;
-                    btn.onclick = () => loadStats(player.id, player.name);
-                    div.appendChild(btn);
+
+        function addPlayer() {
+            const username = document.getElementById('username-input').value.trim();
+            if (!username) return;
+
+            fetch(`/osu/users/${username}/fetch`, { method: 'POST' })
+                .then(res => {
+                    const msgDiv = document.getElementById('message');
+                    if (res.ok) {
+                        msgDiv.innerHTML = `<div class="message success">Player "${username}" added!</div>`;
+                        document.getElementById('username-input').value = '';
+                        loadPlayers();
+                    } else {
+                        res.text().then(text => {
+                            msgDiv.innerHTML = `<div class="message error">${text}</div>`;
+                        });
+                    }
                 });
-            });
+        }
+
+        function loadPlayers() {
+            fetch('/players')
+                .then(res => res.json())
+                .then(players => {
+                    const div = document.getElementById('players');
+                    div.innerHTML = '';
+                    players.forEach(player => {
+                        const btn = document.createElement('button');
+                        btn.className = 'player-btn';
+                        btn.textContent = player.name;
+                        btn.onclick = () => loadStats(player.id, player.name);
+                        div.appendChild(btn);
+                    });
+                });
+        }
+
+        loadPlayers();
 
         function loadStats(playerId, playerName) {
             fetch(`/players/${playerId}/stats/history`)
