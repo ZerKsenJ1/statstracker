@@ -37,6 +37,11 @@ public class PlayerController {
         return osuClient.getAccessToken();
     }
 
+    @GetMapping("/osu/users/{username}")
+    public String getOsuUser(@PathVariable String username) {
+        return osuClient.getUserStats(username);
+    }
+
     @PostMapping("/players")
     public ResponseEntity<String> createUser(@RequestBody Player player) {
         String message = "Player " + player.getName() + " created!";

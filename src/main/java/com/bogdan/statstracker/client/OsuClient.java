@@ -23,6 +23,17 @@ public class OsuClient {
                 .build();
     }
 
+
+    public String getUserStats(String username) {
+        String result = webClient.get()
+                .uri("/api/v2/users/{user}/{mode}", username, "osu")
+                .header("Authorization", "Bearer "+ getAccessToken())
+                .retrieve()
+                .bodyToMono(String.class)
+                .block();
+        return result;
+    }
+
     public String getAccessToken() {
         OsuTokenResponse response = webClient.post()
                 .uri("/oauth/token")
