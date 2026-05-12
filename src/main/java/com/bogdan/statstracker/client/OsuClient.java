@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Value;
 
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 
 import java.util.Map;
 
@@ -29,6 +30,8 @@ public class OsuClient {
                 .uri("/api/v2/users/{user}/{mode}", username, "osu")
                 .header("Authorization", "Bearer "+ getAccessToken())
                 .retrieve()
+                .onStatus(status -> status.value() == 404,
+                        response -> Mono.error(new RuntimeException("Player not found: " + username)))
                 .bodyToMono(OsuUserResponse.class)
                 .block();
         return result;

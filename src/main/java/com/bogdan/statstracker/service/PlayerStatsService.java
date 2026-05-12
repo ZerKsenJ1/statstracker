@@ -35,7 +35,11 @@ public class PlayerStatsService {
 
     public void fetchAndSaveStats(String username) {
         OsuUserResponse osuData = osuClient.getUserStats(username);
-        Player player = playerService.getPlayerByName(username).orElseThrow();
+        Player player = playerService.getPlayerByName(username).orElseGet(() -> {
+            Player newPlayer = new Player(username);
+            playerService.savePlayer(newPlayer);
+            return newPlayer;
+        });
         PlayerStats stats = new PlayerStats();
         stats.setPlayer(player);
         stats.setWorldRank(osuData.getStatistics().getGlobalRank());
