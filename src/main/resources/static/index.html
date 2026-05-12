@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stats Tracker</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 900px; margin: 40px auto; padding: 0 20px; background: #1a1a2e; color: #eee; }
+        h1 { color: #ff79c6; }
+        h2 { color: #bd93f9; }
+        .player-btn { background: #44475a; color: #f8f8f2; border: none; padding: 10px 20px; margin: 5px; border-radius: 5px; cursor: pointer; font-size: 16px; }
+        .player-btn:hover { background: #6272a4; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th { background: #44475a; padding: 10px; text-align: left; }
+        td { padding: 10px; border-bottom: 1px solid #44475a; }
+        tr:hover { background: #2d2d44; }
+    </style>
+</head>
+<body>
+    <h1>osu! Stats Tracker</h1>
+
+    <h2>Players</h2>
+    <div id="players"></div>
+
+    <h2 id="stats-title" style="display:none"></h2>
+    <div id="stats"></div>
+
+    <script>
+        // Load players on page load
+        fetch('/players')
+            .then(res => res.json())
+            .then(players => {
+                const div = document.getElementById('players');
+                players.forEach(player => {
+                    const btn = document.createElement('button');
+                    btn.className = 'player-btn';
+                    btn.textContent = player.name;
+                    btn.onclick = () => loadStats(player.id, player.name);
+                    div.appendChild(btn);
+                });
+            });
+
+        function loadStats(playerId, playerName) {
+            fetch(`/players/${playerId}/stats/history`)
+                .then(res => res.json())
+                .then(stats => {
+                    document.getElementById('stats-title').style.display = 'block';
+                    document.getElementById('stats-title').textContent = playerName + ' — history';
+
+                    const div = document.getElementById('stats');
+                    if (stats.length === 0) {
+                        div.innerHTML = '<p>No stats yet.</p>';
+                        return;
+                    }
+
+                    let html = '<table><tr><th>Date</th><th>World Rank</th><th>Country Rank</th><th>PP</th><th>Accuracy</th><th>Playcount</th></tr>';
+                    stats.forEach(s => {
+                        html += `<tr>
+                            <td>${s.date}</td>
+                            <td>#${s.worldRank}</td>
+                            <td>#${s.countryRank}</td>
+                            <td>${s.pp.toFixed(2)}</td>
+                            <td>${s.accuracy.toFixed(2)}%</td>
+                            <td>${s.playCount}</td>
+                        </tr>`;
+                    });
+                    html += '</table>';
+                    div.innerHTML = html;
+                });
+        }
+    </script>
+</body>
+</html>
